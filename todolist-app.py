@@ -6,6 +6,8 @@ import sys
 # reference: https://stackoverflow.com/questions/64255055/how-to-use-the-enumerate-function-on-a-txt-file
 
 file_path = "tasks.txt"
+MIN_INDEX_VALUE = 1
+MAX_INDEX_VALUE = len("tasks.txt")
 
 def list_tasks():
     with open(file_path, "r") as read_tasks:
@@ -20,10 +22,22 @@ def add_task(task):
     with open(file_path, "a") as a_task:
         a_task.write("\n" + task)
 
-# def remove_task():
-#     
+# reference: https://datagy.io/python-list-pop-remove-del-clear/ 
+def remove_task(index):
+    with open(file_path, "r") as read_tasks:
+        tasks = read_tasks.readlines()
+    if MIN_INDEX_VALUE < index <= MAX_INDEX_VALUE:
+        task_removed = tasks.pop(index - 1)
 
-# def complete_task():
+        with open(file_path, "w") as w_tasks:
+            w_tasks.writelines(tasks)
+        
+        print("Removed task: " + task_removed)
+    else:
+        print("Error! Invalid index, no task was removed.")
+
+
+# def complete_task():          #work in progress
 #     
 
 def main():
@@ -31,12 +45,19 @@ def main():
         list_tasks()
     elif len(sys.argv) > 2 and sys.argv[1] == "-a":
         new_task_to_add = ' '.join(sys.argv[2:])
-        if new_task_to_add:
+        if not new_task_to_add:
+            print("Error! Unable to add new task, no task given!")   
+        else:
             add_task(new_task_to_add)
             print("New task: ", new_task_to_add, "added.")
             list_tasks()
+    elif len(sys.argv) == 3 and sys.argv[1] == "-r":
+        index_to_remove = int(sys.argv[2])
+        if not index_to_remove:
+            print("Error: No task index was entered to remove task.")
         else:
-            print("Error! Unable to add new task, no task!")   
+            remove_task(index_to_remove)
+            list_tasks()
     else:
         print("Error! Enter the correct arguments.")
 
@@ -63,8 +84,6 @@ Command-line arguments:
 
 print(welcome_message)
 
-# list_tasks()      # for testing
 
 # click library for handling command line 
 # argparse is also good for it
-# functions to create --> add_task, list_tasks, remove_task, complete_task, read_tasks
