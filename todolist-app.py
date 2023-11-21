@@ -37,8 +37,20 @@ def remove_task(index):
         print("Error! Invalid index, no task was removed.")
 
 
-# def complete_task():          #work in progress
-#     
+def complete_task(index):
+    with open(file_path, "r") as read_tasks:
+        tasks = read_tasks.readlines()
+    if MIN_INDEX_VALUE < index <= MAX_INDEX_VALUE:
+        tasks[index - 1] = u'\u2713' + " " + tasks[index - 1]
+        # tasks.insert(-1, u'\u2713')
+
+        with open(file_path, "w") as w_task:
+            w_task.writelines(tasks)
+
+        print("Marked", index, "as completed.")
+    else:
+        print("Error! Invalid index, no task was completed.")
+
 
 def main():
     if len(sys.argv) == 2 and sys.argv[1] == "-l":
@@ -57,6 +69,13 @@ def main():
             print("Error: No task index was entered to remove task.")
         else:
             remove_task(index_to_remove)
+            list_tasks()
+    elif len(sys.argv) == 3 and sys.argv[1] == "-c":
+        task_index_to_complete = int(sys.argv[2])
+        if not task_index_to_complete:
+            print("Error! No task index was entered to complete task.")
+        else:
+            complete_task(task_index_to_complete)
             list_tasks()
     else:
         print("Error! Enter the correct arguments.")
@@ -82,8 +101,8 @@ Command-line arguments:
 -c Completes a task
 """
 
-print(welcome_message)
-
+# print(welcome_message)
+# print(u'\u2713')      # sign for completed/checkmark
 
 # click library for handling command line 
 # argparse is also good for it
