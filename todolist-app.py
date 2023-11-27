@@ -5,73 +5,89 @@ import sys
 
 # reference: https://stackoverflow.com/questions/64255055/how-to-use-the-enumerate-function-on-a-txt-file
 
-file_path = "tasks.txt"
+FILE_PATH = "tasks.txt"
 MIN_INDEX_VALUE = 1
 MAX_INDEX_VALUE = len("tasks.txt")
+ARG_INDEX = sys.argv
+ARG_LENGTH = len(ARG_INDEX)
+CMD_LIST = "-l"
+CMD_ADD = "-a"
+CMD_REMOVE = "-r"
+CMD_COMPLETE = "-c"
+
+def read_task_file_lines():
+    try:
+        with open(FILE_PATH, "r") as read_tasks:
+            return read_tasks.readlines()
+    except FileNotFoundError:
+        print("Error! Task file not found. Please create 'tasks.txt' file.")
+
+
+def write_task_file_lines(lines):
+    try:
+        with open(FILE_PATH, "w") as w_tasks:
+            return w_tasks.writelines(lines)
+    except FileNotFoundError:
+        print("Error! Task file not found. Please create 'tasks.txt' file.")
+
 
 def list_tasks():
-    with open(file_path, "r") as read_tasks:
-        tasks = read_tasks.readlines()
-        if tasks:
-            for i, task in enumerate(tasks, 1):
-                print(i, "-", task)
-        else:
-            print("No todo tasks for today!")
+    tasks = read_task_file_lines()
+    if tasks:
+        for i, task in enumerate(tasks, 1):
+            print(i, "-", task)
+    else:
+        print("No todo tasks for today!")
 
 def add_task(task):
-    with open(file_path, "a") as a_task:
+    with open(FILE_PATH, "a") as a_task:
         a_task.write("\n" + task)
+
 
 # reference: https://datagy.io/python-list-pop-remove-del-clear/ 
 def remove_task(index):
-    with open(file_path, "r") as read_tasks:
-        tasks = read_tasks.readlines()
+    tasks = read_task_file_lines()
     if MIN_INDEX_VALUE < index <= MAX_INDEX_VALUE:
         task_removed = tasks.pop(index - 1)
-
-        with open(file_path, "w") as w_tasks:
-            w_tasks.writelines(tasks)
-        
+        write_task_file_lines(tasks)
         print("Removed task: " + task_removed)
     else:
         print("Error! Invalid index, no task was removed.")
 
 
 def complete_task(index):
-    with open(file_path, "r") as read_tasks:
-        tasks = read_tasks.readlines()
+    tasks = read_task_file_lines()
     if MIN_INDEX_VALUE < index <= MAX_INDEX_VALUE:
         tasks[index - 1] = u'\u2713' + " " + tasks[index - 1]
         # tasks.insert(-1, u'\u2713')
-
-        with open(file_path, "w") as w_task:
-            w_task.writelines(tasks)
-
+        write_task_file_lines(tasks)
         print("Marked", index, "as completed.")
     else:
         print("Error! Invalid index, no task was completed.")
 
 
 def main():
-    if len(sys.argv) == 2 and sys.argv[1] == "-l":
+    if ARG_LENGTH == 1:
+        print(welcome_message) 
+    elif ARG_LENGTH == 2 and ARG_INDEX[1] == CMD_LIST:
         list_tasks()
-    elif len(sys.argv) > 2 and sys.argv[1] == "-a":
-        new_task_to_add = ' '.join(sys.argv[2:])
+    elif ARG_LENGTH > 2 and ARG_INDEX[1] == CMD_ADD:
+        new_task_to_add = ' '.join(ARG_INDEX[2:])
         if not new_task_to_add:
             print("Error! Unable to add new task, no task given!")   
         else:
             add_task(new_task_to_add)
             print("New task: ", new_task_to_add, "added.")
             list_tasks()
-    elif len(sys.argv) == 3 and sys.argv[1] == "-r":
-        index_to_remove = int(sys.argv[2])
+    elif ARG_LENGTH == 3 and ARG_INDEX[1] == CMD_REMOVE:
+        index_to_remove = int(ARG_INDEX[2])
         if not index_to_remove:
             print("Error: No task index was entered to remove task.")
         else:
             remove_task(index_to_remove)
             list_tasks()
-    elif len(sys.argv) == 3 and sys.argv[1] == "-c":
-        task_index_to_complete = int(sys.argv[2])
+    elif ARG_LENGTH == 3 and ARG_INDEX[1] == CMD_COMPLETE:
+        task_index_to_complete = int(ARG_INDEX[2])
         if not task_index_to_complete:
             print("Error! No task index was entered to complete task.")
         else:
@@ -79,11 +95,6 @@ def main():
             list_tasks()
     else:
         print("Error! Enter the correct arguments.")
-
-
-if __name__ == "__main__":
-    main()
-    
 
 welcome_message = """
 Welcome to To Do List App!
@@ -101,7 +112,19 @@ Command-line arguments:
 -c Completes a task
 """
 
-# print(welcome_message)
+if __name__ == "__main__":
+    try:
+        main()
+    except ValueError:
+        print("Error! Please enter the correct value")    
+    except Exception as e:
+        print(f"An error occurred. Error type: {e}")
+
+    
+
+
+
+
 # print(u'\u2713')      # sign for completed/checkmark
 
 # click library for handling command line 
