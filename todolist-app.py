@@ -14,6 +14,21 @@ CMD_LIST = "-l"
 CMD_ADD = "-a"
 CMD_REMOVE = "-r"
 CMD_COMPLETE = "-c"
+WELCOME_MESSAGE = """
+Welcome to To Do List App!
+
+==============================
+
+Command-line arguments:
+
+-l Lists all the tasks
+
+-a Adds a new task
+
+-r Removes a task
+
+-c Completes a task
+"""
 
 def read_task_file_lines():
     try:
@@ -26,7 +41,7 @@ def read_task_file_lines():
 def write_task_file_lines(lines):
     try:
         with open(FILE_PATH, "w") as w_tasks:
-            return w_tasks.writelines(lines)
+            w_tasks.writelines(lines)
     except FileNotFoundError:
         print("Error! Task file not found. Please create 'tasks.txt' file.")
 
@@ -40,8 +55,13 @@ def list_tasks():
         print("No todo tasks for today!")
 
 def add_task(task):
-    with open(FILE_PATH, "a") as a_task:
-        a_task.write("\n" + task)
+    try:
+        with open(FILE_PATH, "a") as a_task:
+            a_task.write("\n" + task)
+    except FileNotFoundError:
+        print("Error! Task file not found. Please create 'tasks.txt' file.")
+    except Exception as e:
+        print(f"An error occurred while adding the task: {e}")
 
 
 # reference: https://datagy.io/python-list-pop-remove-del-clear/ 
@@ -68,7 +88,7 @@ def complete_task(index):
 
 def main():
     if ARG_LENGTH == 1:
-        print(welcome_message) 
+        print(WELCOME_MESSAGE) 
     elif ARG_LENGTH == 2 and ARG_INDEX[1] == CMD_LIST:
         list_tasks()
     elif ARG_LENGTH > 2 and ARG_INDEX[1] == CMD_ADD:
@@ -96,21 +116,6 @@ def main():
     else:
         print("Error! Enter the correct arguments.")
 
-welcome_message = """
-Welcome to To Do List App!
-
-==============================
-
-Command-line arguments:
-
--l Lists all the tasks
-
--a Adds a new task
-
--r Removes a task
-
--c Completes a task
-"""
 
 if __name__ == "__main__":
     try:
@@ -120,12 +125,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"An error occurred. Error type: {e}")
 
-    
 
-
-
-
-# print(u'\u2713')      # sign for completed/checkmark
-
-# click library for handling command line 
-# argparse is also good for it
