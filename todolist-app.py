@@ -57,7 +57,7 @@ def list_tasks():
     tasks = read_task_file_lines()
     if tasks:
         for i, task in enumerate(tasks, MIN_INDEX_VALUE):
-            print(i, "-", task.rstrip())
+            print(i, "-", task)
     else:
         print("No todo tasks for today!")
 
@@ -106,27 +106,26 @@ def main():
         print(WELCOME_MESSAGE) 
     elif ARG_LENGTH == 2 and ARG_COMMAND[1] == CMD_LIST:
         list_tasks()
-    elif ARG_LENGTH > 2 and ARG_COMMAND[1] == CMD_ADD:
+    elif ARG_LENGTH >= 2 and ARG_COMMAND[1] == CMD_ADD:
         new_task_to_add = ' '.join(ARG_COMMAND[2:])
         if not new_task_to_add:
             print("Error! Unable to add new task, no task given!")   
         else:
             add_task(new_task_to_add)
             print("New task: ", new_task_to_add, "added.")
+    elif ARG_LENGTH == 2 and ARG_COMMAND[1] == CMD_REMOVE:
+        print("Error: No task index was entered to remove task.")
     elif ARG_LENGTH == 3 and ARG_COMMAND[1] == CMD_REMOVE:
         index_to_remove = int(ARG_COMMAND[2])
-        if not index_to_remove:
-            print("Error: No task index was entered to remove task.")
-        else:
-            remove_task(index_to_remove)
+        remove_task(index_to_remove)
+    elif ARG_LENGTH == 2 and ARG_COMMAND[1] == CMD_COMPLETE:
+        print("Error! No task index was entered to complete task.")
     elif ARG_LENGTH == 3 and ARG_COMMAND[1] == CMD_COMPLETE:
         task_index_to_complete = int(ARG_COMMAND[2])
-        if not task_index_to_complete:
-            print("Error! No task index was entered to complete task.")
-        else:
-            complete_task(task_index_to_complete)
+        complete_task(task_index_to_complete)
     else:
         print("Error! Enter the correct arguments.")
+        print(WELCOME_MESSAGE)
 
 
 if __name__ == "__main__":
