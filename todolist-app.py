@@ -11,6 +11,10 @@ CMD_COMPLETE = "-c"
 WELCOME_MESSAGE = """
 Welcome to To Do List App!
 
+This To-Do List App allows you to manage your day-to-day tasks using the command line.
+You can add, remove, complete and list tasks conveniently.
+You can use the command-line arguments to do so.
+
 ==============================
 
 Command-line arguments:
